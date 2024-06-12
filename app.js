@@ -1,11 +1,9 @@
-let csvToJson = require('convert-csv-to-json')
-const htmlPdf = require('html-pdf');
-QRCode = require('qrcode')
-const fs = require('fs')
+import csvToJson from 'convert-csv-to-json';
+import htmlPdf from 'html-pdf';
+import QRCode from 'qrcode';
+import fs from 'fs';
 
-let json = csvToJson.getJsonFromCsv("beneficiamento.csv")
-
-
+let json = csvToJson.getJsonFromCsv("excel/epoca2.csv")
 
 function convertHtmlToPdf(htmlContent, outputFilePath) {
     const options = { format: 'A4' };
@@ -21,10 +19,12 @@ function convertHtmlToPdf(htmlContent, outputFilePath) {
 
 for (let i = 0; i < json.length; i++) {
 
+    let rangeRow, barcd, triId, lincd, prjCd, familia, imagem, arquivo;
     barcd = json[i]['BARCD']
     triId = json[i]['TriID(MATID)']
     lincd = json[i]['LINCD']
     prjCd = json[i]['PrjCD']
+    rangeRow = json[i]['Range-Row']
     familia = json[i]['Familia']
     imagem = `qrcode/${barcd}.png`
 
@@ -42,11 +42,17 @@ for (let i = 0; i < json.length; i++) {
                             td {
                                 font-size: 50px;
                                 }
+                            p#qrcode {
+                                display: inline;
+                                font-size: 70px;
+                                margin: 50px;
+                            }
                         </style>
                     </head>
                     <body>
                         <div>
                             <img src="data:image/png;base64,${base64Image}" alt="">
+                            <p id="qrcode">${rangeRow}</p>
                         </div>
                         
                         <div>
@@ -77,12 +83,11 @@ for (let i = 0; i < json.length; i++) {
                 </html>
             `
 
-    const outputFilePath = `${barcd}.pdf`;
+    const outputFilePath = `pdf/epoca2/${i}.pdf`;
     convertHtmlToPdf(arquivo, outputFilePath);
-
-
+    console.log(i)
 }
 
-
+console.log('terminooou')
 
 
